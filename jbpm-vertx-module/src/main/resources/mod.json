@@ -1,0 +1,18 @@
+ {
+
+  // Java verticle
+  "main":"org.jbpm.vertx.JbpmVerticle",
+
+  // If your module is going to be registered in the Vert.x module registry you will also need the following
+  // mandatory fields
+  "description":"Vertx module for jBPM 6",
+  "licenses": ["The Apache Software License Version 2.0"],
+  "author": "Maciej Swiderski",
+
+  // Optional fields
+  "developers": ["Maciej Swiderski"],
+  "keywords": ["jbpm", "vertx"],
+  "homepage": "http://mswiderski.blogspot.com",
+
+  "auto-redeploy": true
+}
