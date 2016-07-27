@@ -1,0 +1,40 @@
+package org.jbpm.demo;
+
+import org.jbpm.demo.bank.LoanApplication;
+import org.jbpm.vertx.VerticleServiceProvider;
+
+rule "auto approve when below 1000"
+no-loop  
+  when
+    $loan : LoanApplication(amount <= 1000, explanantion == null)
+  then
+    $loan.setApproved(true);
+    $loan.setExplanantion("Auto Approved");
+    // notify applicant
+    System.out.println(Thread.currentThread().getName() + " Loan " + $loan + " is auto approved");
+    VerticleServiceProvider.get().send($loan.getRequestId(), $loan);
+end
+
+rule "start basic loan process for amount higher than 1000"
+no-loop  
+  when
+    $loan : LoanApplication(amount > 1000, lengthYears < 5, explanantion == null)
+  then
+    $loan.setApproved(false);
+    $loan.setExplanantion("Requires basic approval process");
+    // notify applicant
+    System.out.println(Thread.currentThread().getName() + " Loan " + $loan + " requires basic loan approval process");
+    VerticleServiceProvider.get().sendAsMap("BasicLoan", "loan", $loan);
+end
+
+rule "start long term loan process when duration is more that 5 years"
+no-loop  
+  when
+    $loan : LoanApplication(lengthYears > 5, explanantion == null)
+  then
+    $loan.setApproved(false);
+    $loan.setExplanantion("Requires long term approval process");
+    // notify applicant
+    System.out.println(Thread.currentThread().getName() + " Loan " + $loan + " Requires long term loan approval process");
+    VerticleServiceProvider.get().sendAsMap("LongTermLoan", "loan", $loan);
+end
